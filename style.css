@@ -1,0 +1,674 @@
+/* Root Variables */
+:root {
+    --primary-dark: #121212;
+    --secondary-dark: #181818;
+    --tertiary-dark: #282828;
+    --accent-color: #1DB954;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B3B3B3;
+    --text-tertiary: #727272;
+    --transition: all 0.3s ease;
+}
+
+/* Global Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--primary-dark);
+    color: var(--text-primary);
+    transition: var(--transition);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--secondary-dark);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.logo:hover {
+    color: var(--accent-color);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 24px;
+    transition: var(--transition);
+}
+
+.user-profile:hover {
+    background-color: var(--tertiary-dark);
+}
+
+.profile-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--tertiary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Main Content */
+main {
+    padding: 40px 0;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, var(--text-primary), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeIn 1s ease;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+    animation: fadeIn 1.2s ease;
+}
+
+/* Module Navigation */
+.module-nav {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--tertiary-dark);
+    animation: fadeIn 1.4s ease;
+}
+
+.module-nav::-webkit-scrollbar {
+    height: 6px;
+}
+
+.module-nav::-webkit-scrollbar-track {
+    background: var(--tertiary-dark);
+    border-radius: 10px;
+}
+
+.module-nav::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+}
+
+.module-btn {
+    background-color: var(--tertiary-dark);
+    color: var(--text-secondary);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 24px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.module-btn:hover, .module-btn.active {
+    background-color: var(--accent-color);
+    color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+/* Audiobook cards */
+.audiobooks-section {
+    margin-bottom: 40px;
+    animation: fadeIn 1.6s ease;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    position: relative;
+    padding-left: 15px;
+}
+
+.section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: var(--accent-color);
+    border-radius: 4px;
+}
+
+.carousel-container {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    /* Adjust vertical alignment slightly now that cards have fixed height */
+    transform: translateY(-60%); /* Might need tweaking based on final card height */
+    background-color: rgba(40, 40, 40, 0.7);
+    color: var(--text-primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: var(--transition);
+    font-size: 1.5rem;
+}
+
+.carousel-btn:hover {
+    background-color: var(--accent-color);
+}
+
+.carousel-btn.prev {
+    left: -10px;
+}
+
+.carousel-btn.next {
+    right: -10px;
+}
+
+/* --- MODIFICATION START --- */
+.carousel {
+    display: flex; /* Changed from grid to flex */
+    gap: 20px; /* This now ensures fixed spacing */
+    overflow-x: auto; /* Keep horizontal scrolling */
+    scroll-snap-type: x mandatory; /* Keep snap scrolling */
+    padding: 10px 0; /* Keep padding for shadow/hover effects */
+    scrollbar-width: none; /* Keep scrollbar hidden */
+    -ms-overflow-style: none; /* Keep scrollbar hidden */
+}
+.carousel::-webkit-scrollbar {
+    display: none; /* Keep scrollbar hidden */
+}
+
+.audiobook-card {
+    background-color: var(--secondary-dark);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    scroll-snap-align: start; /* Keep snap alignment */
+    width: 220px; /* Define fixed width */
+    flex-shrink: 0; /* Prevent cards from shrinking */
+}
+/* --- MODIFICATION END --- */
+
+
+.audiobook-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background-color: var(--tertiary-dark);
+}
+
+.audiobook-thumbnail {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: var(--tertiary-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.audiobook-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+.play-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.audiobook-card:hover .play-overlay,
+.audiobook-card.playing .play-overlay {
+    opacity: 1;
+}
+
+.play-btn-card {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    transform: scale(0.8);
+    transition: var(--transition);
+}
+
+.audiobook-card:hover .play-btn-card,
+.audiobook-card.playing .play-btn-card {
+    transform: scale(1);
+}
+.play-btn-card i {
+    pointer-events: none;
+}
+
+
+.audiobook-info {
+    padding: 15px;
+}
+
+.audiobook-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.audiobook-duration {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.audiobook-duration::before {
+    content: "\f017"; /* Font Awesome clock icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 5px;
+    font-size: 0.8em;
+}
+
+/* Player Section */
+.now-playing {
+    background-color: var(--secondary-dark);
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    bottom: 0;
+    z-index: 101;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.5s ease-out;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.player-image-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    background-color: var(--tertiary-dark);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+#player-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.player-text {
+    min-width: 0;
+    flex-grow: 1;
+}
+
+.player-text h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-text p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.control-btn i {
+    pointer-events: none;
+}
+
+.control-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.control-btn.active {
+    color: var(--accent-color);
+}
+
+.control-btn.play {
+    background-color: var(--accent-color);
+    color: var(--primary-dark);
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+}
+
+.control-btn.play:hover {
+    transform: scale(1.1);
+    background-color: #1ed760;
+}
+
+.progress-container {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-info {
+    display: flex;
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    width: 85px;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 4px;
+    background-color: var(--tertiary-dark);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+    position: relative;
+    transition: width 0.1s linear;
+}
+
+.progress-handle {
+    width: 12px;
+    height: 12px;
+    background-color: var(--text-primary);
+    border-radius: 50%;
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    transition: transform 0.1s ease, opacity 0.1s ease;
+    opacity: 0;
+}
+
+.progress-bar:hover .progress-handle,
+.progress-bar:active .progress-handle {
+    transform: translateY(-50%) scale(1.2);
+    opacity: 1;
+}
+
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 120px;
+}
+
+.volume-bar {
+    width: 80px;
+    height: 4px;
+    background-color: var(--tertiary-dark);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.volume-level {
+    height: 100%;
+    width: 70%;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--secondary-dark);
+    padding: 30px 0;
+    text-align: center;
+    margin-top: 60px;
+    padding-bottom: 150px;
+}
+
+.footer-content {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-content a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+     from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+
+    /* Adjust carousel gap and card width for smaller screens */
+    .carousel {
+       gap: 15px; /* Adjust gap */
+    }
+    .audiobook-card {
+        width: 160px; /* Adjust card width */
+    }
+
+    .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+     .carousel-btn.prev {
+        left: 5px;
+    }
+    .carousel-btn.next {
+        right: 5px;
+    }
+
+    .player-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .player-controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+     .progress-container {
+        width: 100%;
+        order: -1;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .progress-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .progress-bar {
+        width: 100%;
+    }
+
+
+    .volume-control {
+        width: 80%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    footer {
+        padding-bottom: 250px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+     .hero-section h1 {
+        font-size: 1.8rem;
+    }
+
+    /* Adjust carousel gap and card width for even smaller screens */
+     .carousel {
+       gap: 10px; /* Adjust gap */
+    }
+     .audiobook-card {
+        width: 140px; /* Adjust card width */
+    }
+
+     .control-buttons {
+        gap: 5px;
+    }
+     .control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+     .control-btn.play {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+}
