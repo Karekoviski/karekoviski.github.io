@@ -23,6 +23,8 @@ body {
     color: var(--text-primary);
     transition: var(--transition);
     overflow-x: hidden;
+    /* Add padding-bottom to prevent content from being hidden behind the sticky player */
+    padding-bottom: 100px; /* Adjust as needed, start with a base value */
 }
 
 .container {
@@ -53,6 +55,11 @@ header {
     color: var(--text-primary);
     text-decoration: none;
     transition: var(--transition);
+    /* Prevent logo text from wrapping */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 60px); /* Adjust based on profile icon size */
 }
 
 .logo:hover {
@@ -67,6 +74,7 @@ header {
     padding: 8px 12px;
     border-radius: 24px;
     transition: var(--transition);
+    flex-shrink: 0; /* Prevent profile icon from shrinking */
 }
 
 .user-profile:hover {
@@ -189,8 +197,7 @@ main {
 .carousel-btn {
     position: absolute;
     top: 50%;
-    /* Adjust vertical alignment slightly now that cards have fixed height */
-    transform: translateY(-60%); /* Might need tweaking based on final card height */
+    transform: translateY(-60%);
     background-color: rgba(40, 40, 40, 0.7);
     color: var(--text-primary);
     border: none;
@@ -218,18 +225,17 @@ main {
     right: -10px;
 }
 
-/* --- MODIFICATION START --- */
 .carousel {
-    display: flex; /* Changed from grid to flex */
-    gap: 20px; /* This now ensures fixed spacing */
-    overflow-x: auto; /* Keep horizontal scrolling */
-    scroll-snap-type: x mandatory; /* Keep snap scrolling */
-    padding: 10px 0; /* Keep padding for shadow/hover effects */
-    scrollbar-width: none; /* Keep scrollbar hidden */
-    -ms-overflow-style: none; /* Keep scrollbar hidden */
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 10px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 .carousel::-webkit-scrollbar {
-    display: none; /* Keep scrollbar hidden */
+    display: none;
 }
 
 .audiobook-card {
@@ -239,12 +245,10 @@ main {
     transition: var(--transition);
     cursor: pointer;
     position: relative;
-    scroll-snap-align: start; /* Keep snap alignment */
-    width: 220px; /* Define fixed width */
-    flex-shrink: 0; /* Prevent cards from shrinking */
+    scroll-snap-align: start;
+    width: 220px;
+    flex-shrink: 0;
 }
-/* --- MODIFICATION END --- */
-
 
 .audiobook-card:hover {
     transform: translateY(-10px);
@@ -266,7 +270,6 @@ main {
     object-fit: cover;
     display: block;
 }
-
 
 .play-overlay {
     position: absolute;
@@ -311,7 +314,6 @@ main {
     pointer-events: none;
 }
 
-
 .audiobook-info {
     padding: 15px;
 }
@@ -344,29 +346,77 @@ main {
 /* Player Section */
 .now-playing {
     background-color: var(--secondary-dark);
-    padding: 20px;
-    border-radius: 12px;
+    padding: 15px 20px; /* Reduced padding */
+    border-radius: 12px 12px 0 0; /* Rounded top corners */
     margin-top: 40px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    /* Changed to allow wrapping and control alignment */
+    flex-wrap: wrap;
+    align-items: center; /* Align items vertically */
+    justify-content: space-between; /* Space out main sections */
+    gap: 15px; /* Reduced gap */
     position: sticky;
     bottom: 0;
+    left: 0; /* Ensure it spans full width */
+    right: 0; /* Ensure it spans full width */
     z-index: 101;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
-    animation: slideUp 0.5s ease-out;
+    transition: transform 0.3s ease-out, height 0.3s ease-out; /* Add height transition */
+    /* Removed animation: slideUp */
+    max-height: 300px; /* Set a max-height for expanded state */
+    overflow: hidden; /* Hide overflow when collapsing */
+}
+
+/* Collapsed state for the player */
+.now-playing.collapsed {
+    /* Adjust height for collapsed state */
+    max-height: 70px; /* Example height, adjust as needed */
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.now-playing.collapsed .player-controls {
+    display: none; /* Hide controls when collapsed */
+}
+
+/* Toggle Button for Player */
+.player-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 36px;
+    height: 36px;
+    display: none; /* Hidden by default, shown on mobile */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: absolute; /* Position it */
+    top: 10px;
+    right: 10px;
+    z-index: 102; /* Above other player elements */
+}
+
+.player-toggle-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .player-info {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px; /* Reduced gap */
+    /* Allow info to take available space, but not push controls */
+    flex-grow: 1;
+    min-width: 0; /* Prevent overflow issues */
 }
 
 .player-image-container {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
+    width: 50px; /* Smaller image */
+    height: 50px;
+    border-radius: 4px; /* Less rounded */
     background-color: var(--tertiary-dark);
     overflow: hidden;
     flex-shrink: 0;
@@ -385,8 +435,8 @@ main {
 }
 
 .player-text h3 {
-    font-size: 1.3rem;
-    margin-bottom: 5px;
+    font-size: 1rem; /* Slightly smaller title */
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -394,32 +444,36 @@ main {
 
 .player-text p {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .player-controls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* Changed to allow wrapping on smaller screens if needed */
     flex-wrap: wrap;
-    gap: 15px;
+    justify-content: center; /* Center controls */
+    gap: 10px; /* Reduced gap */
+    width: 100%; /* Take full width to appear below info on wrap */
+    order: 3; /* Ensure controls are last in flex order */
 }
 
 .control-buttons {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px; /* Reduced gap */
+    order: 2; /* Center buttons */
 }
 
 .control-btn {
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 1rem; /* Slightly smaller icons */
     cursor: pointer;
     transition: var(--transition);
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -441,9 +495,9 @@ main {
 .control-btn.play {
     background-color: var(--accent-color);
     color: var(--primary-dark);
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
+    width: 40px; /* Smaller play button */
+    height: 40px;
+    font-size: 1.2rem;
 }
 
 .control-btn.play:hover {
@@ -451,19 +505,32 @@ main {
     background-color: #1ed760;
 }
 
+/* Make repeat/shuffle less prominent */
+.control-btn#repeat-btn, .control-btn#shuffle-btn {
+    order: 1;
+}
+.control-btn#next-btn, .control-btn#prev-btn {
+    order: 2;
+}
+.control-btn#play-pause-btn {
+    order: 3;
+}
+
 .progress-container {
-    flex: 1;
-    min-width: 200px;
+    flex-grow: 1; /* Allow progress to take space */
+    min-width: 150px; /* Adjust min-width */
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px; /* Reduced gap */
+    order: 1; /* Place progress bar first in controls row */
+    width: 100%; /* Take full width in its row */
 }
 
 .progress-info {
     display: flex;
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* Smaller time */
     color: var(--text-tertiary);
-    width: 85px;
+    width: 75px; /* Adjust width */
     justify-content: space-between;
     flex-shrink: 0;
 }
@@ -505,16 +572,15 @@ main {
     opacity: 1;
 }
 
-
 .volume-control {
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-width: 120px;
+    gap: 8px; /* Reduced gap */
+    order: 3; /* Place volume last in controls row */
 }
 
 .volume-bar {
-    width: 80px;
+    width: 70px; /* Shorter volume bar */
     height: 4px;
     background-color: var(--tertiary-dark);
     border-radius: 2px;
@@ -535,7 +601,7 @@ footer {
     padding: 30px 0;
     text-align: center;
     margin-top: 60px;
-    padding-bottom: 150px;
+    /* Removed fixed padding-bottom, handled by body padding */
 }
 
 .footer-content {
@@ -565,20 +631,36 @@ footer {
     }
 }
 
-@keyframes slideUp {
-     from {
-        opacity: 0;
-        transform: translateY(100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* Removed slideUp animation */
 
 /* Mobile Responsive */
 @media screen and (max-width: 768px) {
+    body {
+        /* Adjust body padding for mobile player height */
+        padding-bottom: 80px; /* Initial collapsed height */
+    }
+    body.player-expanded {
+         padding-bottom: 200px; /* Adjust for expanded player */
+    }
+
+    header {
+        padding: 15px 0; /* Reduce header padding */
+    }
+
+    .logo {
+        font-size: 1.2rem; /* Smaller logo text */
+        max-width: calc(100% - 50px); /* Adjust max-width */
+    }
+
+    .profile-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+    .user-profile {
+        padding: 6px 10px;
+    }
+
     .hero-section h1 {
         font-size: 2rem;
     }
@@ -587,12 +669,11 @@ footer {
         font-size: 1rem;
     }
 
-    /* Adjust carousel gap and card width for smaller screens */
     .carousel {
-       gap: 15px; /* Adjust gap */
+       gap: 15px;
     }
     .audiobook-card {
-        width: 160px; /* Adjust card width */
+        width: 160px;
     }
 
     .carousel-btn {
@@ -607,68 +688,150 @@ footer {
         right: 5px;
     }
 
-    .player-info {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+    /* --- Player Mobile Styles --- */
+    .now-playing {
+        /* Start collapsed on mobile */
+        max-height: 70px;
+        padding: 10px 15px;
+        gap: 10px;
+        border-radius: 0; /* Full width, no top radius needed */
     }
 
-    .player-controls {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
+    .now-playing.expanded {
+        max-height: 300px; /* Allow expansion */
+        /* Restore padding or adjust as needed */
+        padding: 15px;
     }
 
-     .progress-container {
+    .player-toggle-btn {
+        display: flex; /* Show toggle button on mobile */
+    }
+
+    /* In collapsed state, only show info and play/pause */
+    .now-playing.collapsed .player-info {
+        flex-grow: 1; /* Take most space */
+    }
+    .now-playing.collapsed .player-controls {
+        display: flex; /* Show controls container */
+        width: auto; /* Don't take full width */
+        order: 2; /* Place it after info */
+        flex-wrap: nowrap; /* Prevent wrapping */
+    }
+    .now-playing.collapsed .control-buttons {
+         gap: 5px;
+    }
+    /* Hide everything except play/pause in collapsed controls */
+    .now-playing.collapsed .progress-container,
+    .now-playing.collapsed .volume-control,
+    .now-playing.collapsed #repeat-btn,
+    .now-playing.collapsed #shuffle-btn,
+    .now-playing.collapsed #prev-btn,
+    .now-playing.collapsed #next-btn {
+        display: none;
+    }
+    .now-playing.collapsed .control-btn.play {
+        /* Make play button slightly smaller in collapsed */
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    /* Expanded state mobile styles */
+    .now-playing.expanded .player-info {
+        /* Optional: Adjust layout if needed when expanded */
+        /* Example: maybe make image slightly larger again */
+         width: 100%; /* Take full width */
+         justify-content: center; /* Center items */
+         text-align: center;
+         margin-bottom: 10px;
+    }
+     .now-playing.expanded .player-image-container {
+         width: 60px;
+         height: 60px;
+     }
+
+    .now-playing.expanded .player-controls {
+        display: flex; /* Ensure controls are shown */
+        flex-direction: column; /* Stack controls vertically */
+        align-items: center;
+        gap: 15px; /* Adjust gap */
         width: 100%;
-        order: -1;
-        flex-direction: column;
+        order: 2; /* Below info */
+    }
+
+    .now-playing.expanded .progress-container {
+        display: flex; /* Show progress */
+        width: 100%;
+        order: 1; /* Progress first */
+        flex-direction: column; /* Stack time/bar */
         gap: 5px;
     }
-    .progress-info {
+    .now-playing.expanded .progress-info {
         width: 100%;
         justify-content: space-between;
     }
-    .progress-bar {
+    .now-playing.expanded .progress-bar {
         width: 100%;
     }
 
+    .now-playing.expanded .control-buttons {
+        order: 2; /* Buttons second */
+        gap: 10px;
+    }
+     /* Restore button sizes if needed */
+     .now-playing.expanded .control-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+     .now-playing.expanded .control-btn.play {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
 
-    .volume-control {
+    .now-playing.expanded .volume-control {
+        display: flex; /* Show volume */
         width: 80%;
         justify-content: center;
-        margin-top: 10px;
+        order: 3; /* Volume last */
+        margin-top: 5px;
     }
 
-    footer {
-        padding-bottom: 250px;
-    }
+    /* Remove footer padding adjustment, handled by body */
+    /* footer { padding-bottom: 250px; } */
 }
 
 @media screen and (max-width: 480px) {
+     .logo {
+        font-size: 1rem; /* Even smaller logo */
+        max-width: calc(100% - 45px);
+     }
+
      .hero-section h1 {
         font-size: 1.8rem;
     }
 
-    /* Adjust carousel gap and card width for even smaller screens */
      .carousel {
-       gap: 10px; /* Adjust gap */
+       gap: 10px;
     }
      .audiobook-card {
-        width: 140px; /* Adjust card width */
+        width: 140px;
     }
 
-     .control-buttons {
+    /* Further adjustments for smallest screens if needed */
+    .now-playing.expanded .control-buttons {
         gap: 5px;
     }
-     .control-btn {
+     .now-playing.expanded .control-btn {
         width: 32px;
         height: 32px;
         font-size: 1rem;
     }
-     .control-btn.play {
+     .now-playing.expanded .control-btn.play {
         width: 45px;
         height: 45px;
         font-size: 1.3rem;
     }
 }
+

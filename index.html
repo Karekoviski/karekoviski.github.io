@@ -40,6 +40,11 @@
         <section class="now-playing" id="now-playing-section" style="display: none;"> <!-- Initially hidden -->
             <audio id="audio-player" preload="metadata"></audio> <!-- Hidden audio element -->
 
+            <!-- Toggle Button (Mobile Only) -->
+            <button class="player-toggle-btn" id="player-toggle-btn" aria-label="Expandir player">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+
             <div class="player-info">
                 <div class="player-image-container">
                     <img id="player-image" src="https://via.placeholder.com/80" alt="Capa do audiobook atual">
