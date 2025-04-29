@@ -7,29 +7,29 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "introducao", module: "Introdução", title: "Introdução", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/INTRODUÇÃO.mp3" },
 
         // Module 1
-        { id: "mod1_nc1", module: "Módulo 1", title: "Módulo 1 NC1", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC1.mp3" },
-        { id: "mod1_nc2", module: "Módulo 1", title: "Módulo 1 NC2", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC2.mp3" },
-        { id: "mod1_nc3", module: "Módulo 1", title: "Módulo 1 NC3", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC3.mp3" },
-        { id: "mod1_nc4", module: "Módulo 1", title: "Módulo 1 NC4", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC4.mp3" },
+        { id: "mod1_nc1", module: "Módulo 1", title: "O que são transtornos de ansiedade?", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC1.mp3" },
+        { id: "mod1_nc2", module: "Módulo 1", title: "Transtorno de Ansiedade de Separação", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC2.mp3" },
+        { id: "mod1_nc3", module: "Módulo 1", title: "Transtorno de Pânico", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC3.mp3" },
+        { id: "mod1_nc4", module: "Módulo 1", title: "Agorafobia", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD1 NC4.mp3" },
 
         // Module 2
-        { id: "mod2_nc1", module: "Módulo 2", title: "Módulo 2 NC1", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC1.mp3" },
-        { id: "mod2_nc2", module: "Módulo 2", title: "Módulo 2 NC2", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC2.mp3" },
-        { id: "mod2_nc3", module: "Módulo 2", title: "Módulo 2 NC3", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC3.mp3" },
-        { id: "mod2_nc4", module: "Módulo 2", title: "Módulo 2 NC4", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC4.mp3" },
+        { id: "mod2_nc1", module: "Módulo 2", title: "Mutismo Seletivo", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC1.mp3" },
+        { id: "mod2_nc2", module: "Módulo 2", title: "Fobia Específica", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC2.mp3" },
+        { id: "mod2_nc3", module: "Módulo 2", title: "Transtorno de Ansiedade Social", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC3.mp3" },
+        { id: "mod2_nc4", module: "Módulo 2", title: "Transtorno de Ansiedade Generalizada", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD2 NC4.mp3" },
 
         // Module 3
-        { id: "mod3_nc1", module: "Módulo 3", title: "Módulo 3 NC1", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD3 NC1.mp3" },
-        { id: "mod3_nc2", module: "Módulo 3", title: "Módulo 3 NC2", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD3 NC2.mp3" },
-        { id: "mod3_nc3", module: "Módulo 3", title: "Módulo 3 NC3", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD3 NC3.mp3" },
+        { id: "mod3_nc1", module: "Módulo 3", title: "Transtornos Induzidos", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD3 NC1.mp3" },
+        { id: "mod3_nc2", module: "Módulo 3", title: "Transtorno de Ansiedade Induzido por Substância ou Medicamento", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD3 NC2.mp3" },
+        { id: "mod3_nc3", module: "Módulo 3", title: "Transtorno de Ansiedade Devido a Outra Condição Médica", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD3 NC3.mp3" },
 
         // Module 4
-        { id: "mod4_nc1", module: "Módulo 4", title: "Módulo 4 NC1", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC1.mp3" },
-        { id: "mod4_nc2", module: "Módulo 4", title: "Módulo 4 NC2", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC2.mp3" },
-        { id: "mod4_nc3", module: "Módulo 4", title: "Módulo 4 NC3", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC3.mp3" },
-        { id: "mod4_nc4", module: "Módulo 4", title: "Módulo 4 NC4", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC4.mp3" },
-        { id: "mod4_nc5", module: "Módulo 4", title: "Módulo 4 NC5", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC5.mp3" },
-        { id: "mod4_nc6", module: "Módulo 4", title: "Módulo 4 NC6", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC6.mp3" },
+        { id: "mod4_nc1", module: "Módulo 4", title: "Transtornos de Sintomas Somáticos", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC1.mp3" },
+        { id: "mod4_nc2", module: "Módulo 4", title: "Transtorno de Ansiedade de Doença", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC2.mp3" },
+        { id: "mod4_nc3", module: "Módulo 4", title: "Transtorno Conversivo", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC3.mp3" },
+        { id: "mod4_nc4", module: "Módulo 4", title: "Fatores Psicológicos que Afetam Outras Condições Médicas", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC4.mp3" },
+        { id: "mod4_nc5", module: "Módulo 4", title: "Transtorno Factício", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC5.mp3" },
+        { id: "mod4_nc6", module: "Módulo 4", title: "Outro Transtornos Somáticos", durationSeconds: 0, imgSrc: "Imgs/estudio.png", audioSrc: "Audios/MOD4 NC6.mp3" },
         // Add Module 5, 6 etc. here following the same pattern if needed
     ];
 
