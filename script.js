@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentVolume = 0.7;
     let isSeeking = false;
     let isPlayerExpanded = false; // State for mobile player collapse/expand
+    let resizeTimeout; // For debouncing resize events
 
     // --- Helper Functions ---
     function formatTime(seconds) {
@@ -106,7 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         // Attach listener to the CARD itself
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (event) => {
+            // Prevent click from propagating if play button was clicked
+            if (event.target.closest(".play-btn-card")) {
+                 event.stopPropagation(); // Stop card click if button is clicked
+            }
             currentIndex = currentPlaylist.indexOf(audiobook.id);
             if (currentIndex === -1) {
                  console.warn(`Audiobook ${audiobook.id} not found in current playlist. Resetting playlist.`);
@@ -121,10 +126,37 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        // Add listener specifically to the play button within the card
+        const playButton = card.querySelector(".play-btn-card");
+        if (playButton) {
+            playButton.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent card click listener from firing
+                currentIndex = currentPlaylist.indexOf(audiobook.id);
+                 if (currentIndex === -1) {
+                    console.warn(`Audiobook ${audiobook.id} not found in current playlist. Resetting playlist.`);
+                    currentPlaylist = audiobooksData.map(b => b.id); // Reset to all
+                    currentIndex = currentPlaylist.indexOf(audiobook.id);
+                }
+
+                if (currentIndex !== -1) {
+                    // If this card is already the current one, toggle play/pause
+                    if (currentAudiobook?.id === audiobook.id) {
+                        togglePlayPause();
+                    } else {
+                        // Otherwise, load and play this audiobook
+                        loadAudiobook(audiobook.id);
+                    }
+                } else {
+                     console.error(`Could not find index for ${audiobook.id} even after reset.`);
+                }
+            });
+        }
+
         return card;
     }
 
      function renderAudiobooks(filterModule = "all") {
+        const currentScrollY = window.scrollY; // Store scroll position
         audiobooksContainer.innerHTML = "";
         moduleNav.innerHTML = ""; // Clear existing buttons
 
@@ -189,53 +221,65 @@ document.addEventListener("DOMContentLoaded", () => {
                 carousel.appendChild(createAudiobookCard(book));
             });
 
-            // --- *** CORRECTED BUTTON LOGIC START *** ---
-            carouselContainer.appendChild(carousel); // Append the original carousel WITH listeners
-
-            const needsCarouselButtons = groupedByModule[mod].length > calculateVisibleCards();
-
-            if (needsCarouselButtons) {
-                // Create Prev Button
-                const prevBtn = document.createElement("button");
-                prevBtn.className = "carousel-btn prev";
-                prevBtn.setAttribute("aria-label", "Anterior");
-                prevBtn.innerHTML = "❮"; // Left arrow
-
-                // Create Next Button
-                const nextBtn = document.createElement("button");
-                nextBtn.className = "carousel-btn next";
-                nextBtn.setAttribute("aria-label", "Próximo");
-                nextBtn.innerHTML = "❯"; // Right arrow
-
-                // Calculate scroll amount (adjust multiplier as needed)
-                const scrollAmount = carousel.querySelector(".audiobook-card")?.offsetWidth * 2 || 500;
-
-                // Add listeners to the created buttons
-                prevBtn.addEventListener("click", () => carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" }));
-                nextBtn.addEventListener("click", () => carousel.scrollBy({ left: scrollAmount, behavior: "smooth" }));
-
-                // Insert buttons into the container AROUND the carousel
-                carouselContainer.insertBefore(prevBtn, carousel); // Add prev button before
-                carouselContainer.appendChild(nextBtn);         // Add next button after
-            }
-            // --- *** CORRECTED BUTTON LOGIC END *** ---
-
-            section.appendChild(carouselContainer); // Add container to section
-            audiobooksContainer.appendChild(section); // Add section to main container
+            carouselContainer.appendChild(carousel);
+            section.appendChild(carouselContainer);
+            audiobooksContainer.appendChild(section);
         });
 
+        updateCarouselButtonsVisibility(); // Update buttons after rendering
         updatePlayingCardStyle();
+        window.scrollTo(0, currentScrollY); // Restore scroll position
     }
 
-
-    function calculateVisibleCards() {
-        if (!audiobooksContainer) return 1; // Safety check
-        const containerWidth = audiobooksContainer.offsetWidth || window.innerWidth;
-        const cardElement = audiobooksContainer.querySelector(".audiobook-card");
-        const cardStyle = cardElement ? window.getComputedStyle(cardElement) : null;
-        const cardWidth = cardElement ? parseFloat(cardStyle?.width || 220) : 220;
-        const cardGap = cardElement ? parseFloat(window.getComputedStyle(cardElement.parentElement)?.gap || 20) : 20;
+    // Function to calculate how many cards are visible in a carousel
+    function calculateVisibleCards(carousel) {
+        if (!carousel) return 1;
+        const containerWidth = carousel.offsetWidth;
+        const cardElement = carousel.querySelector(".audiobook-card");
+        if (!cardElement) return 1;
+        const cardStyle = window.getComputedStyle(cardElement);
+        const cardWidth = parseFloat(cardStyle.width) || 220;
+        const cardGap = parseFloat(window.getComputedStyle(carousel).gap) || 20;
         return Math.max(1, Math.floor(containerWidth / (cardWidth + cardGap)));
+    }
+
+    // Function to show/hide carousel buttons based on visibility
+    function updateCarouselButtonsVisibility() {
+        document.querySelectorAll(".carousel-container").forEach(container => {
+            const carousel = container.querySelector(".carousel");
+            const cards = carousel.querySelectorAll(".audiobook-card");
+            const visibleCards = calculateVisibleCards(carousel);
+            const needsButtons = cards.length > visibleCards;
+
+            let prevBtn = container.querySelector(".carousel-btn.prev");
+            let nextBtn = container.querySelector(".carousel-btn.next");
+
+            if (needsButtons) {
+                if (!prevBtn) {
+                    prevBtn = document.createElement("button");
+                    prevBtn.className = "carousel-btn prev";
+                    prevBtn.setAttribute("aria-label", "Anterior");
+                    prevBtn.innerHTML = "❮";
+                    const scrollAmount = (carousel.querySelector(".audiobook-card")?.offsetWidth + parseFloat(window.getComputedStyle(carousel).gap || 20)) * Math.floor(visibleCards * 0.8) || 500;
+                    prevBtn.addEventListener("click", () => carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" }));
+                    container.insertBefore(prevBtn, carousel);
+                }
+                if (!nextBtn) {
+                    nextBtn = document.createElement("button");
+                    nextBtn.className = "carousel-btn next";
+                    nextBtn.setAttribute("aria-label", "Próximo");
+                    nextBtn.innerHTML = "❯";
+                    const scrollAmount = (carousel.querySelector(".audiobook-card")?.offsetWidth + parseFloat(window.getComputedStyle(carousel).gap || 20)) * Math.floor(visibleCards * 0.8) || 500;
+                    nextBtn.addEventListener("click", () => carousel.scrollBy({ left: scrollAmount, behavior: "smooth" }));
+                    container.appendChild(nextBtn);
+                }
+                prevBtn.style.display = "flex";
+                nextBtn.style.display = "flex";
+            } else {
+                if (prevBtn) prevBtn.style.display = "none";
+                if (nextBtn) nextBtn.style.display = "none";
+            }
+        });
     }
 
     // --- Audio Playback Logic ---
@@ -246,8 +290,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // If clicking the currently loaded track and it's paused, just play
         if (currentAudiobook?.id === id && !isPlaying) {
             playAudio();
+            return;
+        }
+        // If clicking the currently playing track, do nothing (handled by card's play button listener)
+        if (currentAudiobook?.id === id && isPlaying) {
             return;
         }
 
@@ -262,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
         progress.style.width = "0%";
 
         audioPlayer.currentTime = 0;
-        playAudio();
+        playAudio(); // Start playing the new track
 
         nowPlayingSection.style.display = "flex";
         // Ensure player starts collapsed on mobile if not already expanded
@@ -286,10 +335,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 updatePlayingCardStyle();
             }).catch(error => {
                 console.error("Playback failed (Browser restriction? File exists?):", error);
-                isPlaying = false;
-                playPauseIcon.classList.replace("fa-pause", "fa-play");
-                playPauseBtn.setAttribute("aria-label", "Reproduzir");
-                updatePlayingCardStyle();
+                // Don't automatically pause if it fails, let user retry?
+                // isPlaying = false;
+                // playPauseIcon.classList.replace("fa-pause", "fa-play");
+                // playPauseBtn.setAttribute("aria-label", "Reproduzir");
+                // updatePlayingCardStyle();
             });
         }
     }
@@ -315,6 +365,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const duration = audioPlayer.duration && isFinite(audioPlayer.duration) ? audioPlayer.duration : currentAudiobook?.durationSeconds || 0;
         if (!currentAudiobook || duration <= 0 || isSeeking) {
              currentTimeEl.textContent = formatTime(audioPlayer.currentTime || 0);
+             // If seeking, update progress bar visually but don't change audio time here
+             if (isSeeking && duration > 0) {
+                 const percentage = (audioPlayer.currentTime / duration) * 100;
+                 progress.style.width = `${percentage}%`;
+             }
              return;
         }
         const percentage = (audioPlayer.currentTime / duration) * 100;
@@ -335,11 +390,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const percentage = Math.max(0, Math.min(1, clickX / width));
         const seekTime = percentage * duration;
 
+        // Update visually immediately
+        progress.style.width = `${percentage * 100}%`;
+        currentTimeEl.textContent = formatTime(seekTime);
+
+        // Update audio player time only if duration is valid
         if(audioPlayer.duration && isFinite(audioPlayer.duration)) {
             audioPlayer.currentTime = seekTime;
         }
-        progress.style.width = `${percentage * 100}%`;
-        currentTimeEl.textContent = formatTime(seekTime);
     }
 
      function handleSeekStart(event) {
@@ -367,11 +425,15 @@ document.addEventListener("DOMContentLoaded", () => {
         document.removeEventListener("touchmove", handleSeeking);
         document.removeEventListener("mouseup", handleSeekEnd);
         document.removeEventListener("touchend", handleSeekEnd);
-        // Ensure audio currentTime matches if it wasn't updated during seek
+        // Final check to ensure audio time matches progress bar if needed
         const duration = audioPlayer.duration && isFinite(audioPlayer.duration) ? audioPlayer.duration : currentAudiobook?.durationSeconds || 0;
         if (duration > 0) {
              const percentage = parseFloat(progress.style.width) / 100;
-             audioPlayer.currentTime = percentage * duration;
+             const expectedTime = percentage * duration;
+             // Small tolerance to avoid unnecessary seeks due to rounding
+             if (Math.abs(audioPlayer.currentTime - expectedTime) > 0.5) {
+                 audioPlayer.currentTime = expectedTime;
+             }
         }
     }
 
@@ -407,22 +469,24 @@ document.addEventListener("DOMContentLoaded", () => {
             volumeLevel.style.width = "0%";
             updateVolumeIcon();
         } else {
-            audioPlayer.volume = currentVolume;
-            volumeLevel.style.width = `${currentVolume * 100}%`;
+            // Restore to previous non-zero volume, or default if it was 0
+            const restoreVolume = currentVolume > 0 ? currentVolume : 0.7;
+            audioPlayer.volume = restoreVolume;
+            volumeLevel.style.width = `${restoreVolume * 100}%`;
+            // Update currentVolume only if restoring from mute
+            if (currentVolume === 0) currentVolume = restoreVolume;
             updateVolumeIcon();
         }
     }
 
     function updateVolumeIcon() {
+        if (!volumeIcon) return;
         if (audioPlayer.volume === 0) {
-            volumeIcon.classList.replace("fa-volume-high", "fa-volume-xmark");
-            volumeIcon.classList.replace("fa-volume-low", "fa-volume-xmark");
+            volumeIcon.className = "fas fa-volume-xmark"; // Use consistent assignment
         } else if (audioPlayer.volume < 0.5) {
-            volumeIcon.classList.replace("fa-volume-high", "fa-volume-low");
-            volumeIcon.classList.replace("fa-volume-xmark", "fa-volume-low");
+            volumeIcon.className = "fas fa-volume-low";
         } else {
-            volumeIcon.classList.replace("fa-volume-low", "fa-volume-high");
-            volumeIcon.classList.replace("fa-volume-xmark", "fa-volume-high");
+            volumeIcon.className = "fas fa-volume-high";
         }
     }
 
@@ -438,11 +502,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function playNext() {
-        if (!currentAudiobook) return;
+        if (!currentAudiobook || currentPlaylist.length === 0) return;
         let nextIndex;
         if (isShuffle) {
             // Simple shuffle: pick a random index different from current
-            if (currentPlaylist.length <= 1) return; // No next track
+            if (currentPlaylist.length <= 1) {
+                 // If only one track, restart if not repeating
+                 if (!isRepeat) audioPlayer.currentTime = 0;
+                 playAudio(); // Re-play or continue loop
+                 return;
+            }
             do {
                 nextIndex = Math.floor(Math.random() * currentPlaylist.length);
             } while (nextIndex === currentIndex);
@@ -454,9 +523,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function playPrev() {
-        if (!currentAudiobook) return;
+        if (!currentAudiobook || currentPlaylist.length === 0) return;
         // If played for more than 3 seconds, restart current track, otherwise go to previous
-        if (audioPlayer.currentTime > 3) {
+        if (audioPlayer.currentTime > 3 && !isShuffle) { // Restart only works well without shuffle
             audioPlayer.currentTime = 0;
             playAudio();
             return;
@@ -465,7 +534,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let prevIndex;
         if (isShuffle) {
              // Simple shuffle: pick a random index different from current
-            if (currentPlaylist.length <= 1) return; // No prev track
+            if (currentPlaylist.length <= 1) {
+                 if (!isRepeat) audioPlayer.currentTime = 0;
+                 playAudio();
+                 return;
+            }
             do {
                 prevIndex = Math.floor(Math.random() * currentPlaylist.length);
             } while (prevIndex === currentIndex);
@@ -488,15 +561,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updatePlayingCardStyle() {
         document.querySelectorAll(".audiobook-card").forEach(card => {
+            const playIcon = card.querySelector(".play-btn-card i");
             if (card.dataset.id === currentAudiobook?.id) {
                 card.classList.add("playing");
-                const playIcon = card.querySelector(".play-btn-card i");
                 if (playIcon) {
                     playIcon.className = isPlaying ? "fas fa-pause" : "fas fa-play";
                 }
             } else {
                 card.classList.remove("playing");
-                const playIcon = card.querySelector(".play-btn-card i");
                  if (playIcon) {
                     playIcon.className = "fas fa-play";
                 }
@@ -583,20 +655,29 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         expandPlayer(); // Default to expanded on larger screens
     }
-    // Add resize listener to adjust player state
-    window.addEventListener("resize", () => {
-        if (window.innerWidth > 768) {
+
+    // Debounced resize handler
+    function handleResize() {
+        // Adjust player state immediately
+         if (window.innerWidth > 768) {
             expandPlayer(); // Ensure expanded on desktop
         } else {
             // On mobile, retain current state unless forced
-            if (isPlayerExpanded) {
+            // This logic seems okay, maybe simplify?
+             if (isPlayerExpanded) {
                 expandPlayer();
             } else {
                 collapsePlayer();
             }
         }
-        // Re-calculate carousel buttons visibility on resize
-        renderAudiobooks(document.querySelector(".module-btn.active")?.dataset.module || "all");
+        // Update carousel buttons visibility without full re-render
+        updateCarouselButtonsVisibility();
+    }
+
+    // Add resize listener with debounce
+    window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(handleResize, 150); // Debounce resize events (150ms delay)
     });
 
 });
